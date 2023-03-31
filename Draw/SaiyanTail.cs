@@ -39,6 +39,7 @@ public sealed class SaiyanTail : PlayerDrawLayer {
 
     private static Type TransformationHelper => m_TransformationHelper ??= SaiyanTails.DBT.DefinedTypes.FirstOrDefault(a => a.Name.Equals("TransformationHelper"));
     private static Type DbzcalamityPlayer => m_DbzcalamityPlayer ??= SaiyanTails.DBCA.DefinedTypes.FirstOrDefault(a => a.Name.Equals("dbzcalamityPlayer"));
+    private static Type OPlayer => m_OPlayer ??= SaiyanTails.Oozaru.DefinedTypes.FirstOrDefault(a => a.Name.Equals("OPlayer"));
 
     internal static Color GetColor(Player player) {
         if (SaiyanTails.DBT != null && TransformationHelper != null && TransformationHelper != default) {
@@ -66,12 +67,33 @@ public sealed class SaiyanTail : PlayerDrawLayer {
                     return UECol;
             }
         }
+
+        if (SaiyanTails.Oozaru != null && OPlayer != null & OPlayer != default) {
+            var modPlayers = player.ModPlayers;
+
+            foreach (var mPlayer in modPlayers) {
+                if (mPlayer.Name.Equals("OPlayer")) {
+                    if ((bool)OPlayer.GetField("SSJ4Active").GetValue(mPlayer)) {
+                        return SSJ4Col;
+                    }
+                    if ((bool)OPlayer.GetField("SSJ4FPActive").GetValue(mPlayer)) {
+                        return SSJ4FPCol;
+                    }
+                    if ((bool)OPlayer.GetField("SSJ4LBActive").GetValue(mPlayer)) {
+                        return SSJ4LBCol;
+                    }
+                }
+            }
+        }
+
+
         var color = player.GetHairColor(true);
         return new Color(color.R - 5, color.G - 5, color.B - 5);
     }
 
     private static Type m_TransformationHelper;
     private static Type m_DbzcalamityPlayer;
+    private static Type m_OPlayer;
 
     private static readonly Dictionary<int, Color> m_colors = new() {
         { 1, new(255, 240, 40) },
@@ -88,4 +110,8 @@ public sealed class SaiyanTail : PlayerDrawLayer {
     private static readonly Color IUICol = new(0, 0, 20);
     private static readonly Color MUICol = new(236, 236, 248);
     private static readonly Color UECol = new(156, 0, 255);
+
+    private static readonly Color SSJ4Col = new(0, 0, 0);
+    private static readonly Color SSJ4FPCol = new(25, 25, 25);
+    private static readonly Color SSJ4LBCol = new(255, 50, 50);
 }

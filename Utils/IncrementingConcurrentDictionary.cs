@@ -4,7 +4,7 @@ using Terraria;
 
 namespace SaiyanTails.Utils;
 
-internal class IncrementingConcurrentDictionary<K> where K : notnull {
+internal sealed class IncrementingConcurrentDictionary<K> where K : notnull {
     private readonly ConcurrentDictionary<K, long> m_BackingField;
 
     internal IncrementingConcurrentDictionary() {
